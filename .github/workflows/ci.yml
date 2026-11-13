@@ -1,0 +1,32 @@
+name: Secure RAG CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  unit-and-integration:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure unique local demo credentials
+        run: python3 scripts/init_env.py
+      - name: Build and start local stack
+        run: docker compose up --build --detach --wait
+      - name: Python syntax and lint
+        run: |
+          docker compose exec -T api python -m compileall -q app scripts tests
+          docker compose exec -T api ruff check app scripts tests
+      - name: Unit tests
+        run: docker compose exec -T api pytest -q tests/unit
+      - name: Live RLS and HTTP security regression tests
+        run: docker compose exec -T -e RUN_INTEGRATION=1 api pytest -q tests/integration
+      - name: Bandit source scan
+        run: docker compose exec -T api bandit -q -r app
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail=120
+      - name: Stop services
+        if: always()
+        run: docker compose down -v
