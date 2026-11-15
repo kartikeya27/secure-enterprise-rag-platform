@@ -1,5 +1,8 @@
 # Secure Enterprise RAG Platform
 
+**Languages represented in this repository:**
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) ![SQL](https://img.shields.io/badge/SQL-4479A1?logo=postgresql&logoColor=white) ![Shell](https://img.shields.io/badge/Shell-4EAA25?logo=gnubash&logoColor=white)
+
 **A local-first, multi-tenant document retrieval API that protects sensitive information before it reaches a search result.**
 
 The platform combines authenticated access, document classification, group-based permissions, PostgreSQL row-level security (RLS), vector search, PII redaction, and audit events. It is designed for **local learning, development, and security demonstrations using synthetic data**.
